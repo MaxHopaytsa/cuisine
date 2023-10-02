@@ -1,0 +1,42 @@
+{
+  "name": "backend",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "18.x.x",
+    "npm": "9.x.x"
+  },
+  "scripts": {
+    "prebuild": "npm install",
+    "lint:type": "npx tsc --noEmit",
+    "lint:js": "npx eslint \"src/**/*.ts\"",
+    "start:dev": "nodemon --exec \"node --loader ts-paths-esm-loader\" src/index.ts",
+    "build:ts": "npx tsc && tsc-alias -p tsconfig.json",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@fastify/auth": "^4.3.0",
+    "@fastify/cors": "^8.4.0",
+    "@fastify/multipart": "^8.0.0",
+    "@fastify/static": "^6.11.2",
+    "@types/bcryptjs": "^2.4.4",
+    "@types/convict": "^6.1.4",
+    "bcryptjs": "^2.4.3",
+    "convict": "^6.2.4",
+    "dotenv": "^16.3.1",
+    "fastify": "^4.23.2",
+    "fastify-plugin": "^4.5.1",
+    "fastify-raw-body": "^4.2.2",
+    "mime-types": "^2.1.35",
+    "pino": "^8.15.3",
+    "pino-pretty": "^10.2.0"
+  },
+  "devDependencies": {
+    "@types/mime-types": "^2.1.2",
+    "@types/uuid": "^9.0.4",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1",
+    "ts-paths-esm-loader": "^1.4.3",
+    "tsconfig-paths": "^4.2.0"
+  }
+}
