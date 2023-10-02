@@ -1,0 +1,50 @@
+{
+  "name": "cuisine",
+  "version": "1.0.0",
+  "description": "App for cooking",
+  "engines": {
+    "node": "18.x.x",
+    "npm": "9.x.x"
+  },
+  "workspaces": [
+    "shared",
+    "backend",
+    "mobile"
+  ],
+  "scripts": {
+    "install:all": "npm install && npm run build:shared",
+    "build:shared": "npm run build -w shared",
+    "build:frontend": "npm run build -w frontend",
+    "build:backend": "npm run build -w backend",
+    "lint:editor": "editorconfig-checker",
+    "lint:fs": "ls-lint",
+    "lint:type": "npm run lint:type --workspaces --if-present",
+    "lint:js": "npm run lint:js --workspaces --if-present -- --max-warnings=0",
+    "lint:css": "npm run lint:css --workspaces --if-present -- --fix",
+    "lint:prettify": "prettier --check \"**/*.{ts,tsx,json,md,html}\"",
+    "lint": "npm run lint:editor && npm run lint:fs && npm run lint:prettify && npm run lint:type && npm run lint:js && npm run lint:css",
+    "prettify": "prettier --write \"**/*.{ts,tsx,json,md,html}\"",
+    "build": "npm run build:shared && npm run build:frontend && npm run build:backend",
+    "install:build": "cd ./build/shared/build && npm install --ignore-scripts && cd ../../backend && npm install",
+    "prestart": "npm run build",
+    "start": "cd ./build/backend && npm start",
+    "test": "jest"
+  },
+  "author": "Max Hop",
+  "license": "ISC",
+  "devDependencies": {
+    "@ls-lint/ls-lint": "^2.1.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.3",
+    "@typescript-eslint/parser": "^6.7.3",
+    "editorconfig-checker": "^5.1.1",
+    "eslint": "^8.50.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "eslint-plugin-sonarjs": "^0.21.0",
+    "eslint-plugin-unicorn": "^48.0.1",
+    "lint-staged": "^14.0.1",
+    "prettier": "^3.0.3",
+    "tsc-alias": "^1.8.8",
+    "typescript": "^5.2.2"
+  }
+}
