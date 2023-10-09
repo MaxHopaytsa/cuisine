@@ -55,6 +55,14 @@ class Config implements IConfig {
           default: null,
         },
       },
+      DB: {
+        DATABASE_URL: {
+          doc: 'Database connection string',
+          format: String,
+          env: 'DATABASE_URL',
+          default: null,
+        },
+      },
     });
   }
 }

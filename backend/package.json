@@ -21,6 +21,7 @@
     "@fastify/cors": "^8.4.0",
     "@fastify/multipart": "^8.0.0",
     "@fastify/static": "^6.11.2",
+    "@prisma/client": "^5.4.1",
     "@types/bcryptjs": "^2.4.4",
     "@types/convict": "^6.1.4",
     "bcryptjs": "^2.4.3",
@@ -38,6 +39,7 @@
     "@types/mime-types": "^2.1.2",
     "@types/uuid": "^9.0.4",
     "nodemon": "^3.0.1",
+    "prisma": "^5.4.1",
     "ts-node": "^10.9.1",
     "ts-paths-esm-loader": "^1.4.3",
     "tsconfig-paths": "^4.2.0"

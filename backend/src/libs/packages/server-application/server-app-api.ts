@@ -1,4 +1,3 @@
-
 import { type IConfig } from '~/libs/packages/config/config.js';
 
 import { type IServerAppApi } from './libs/interfaces/interfaces.js';
@@ -22,7 +21,6 @@ class ServerAppApi implements IServerAppApi {
       ...it,
       path: this.buildFullPath(it.path),
     }));
-
   }
 
   public buildFullPath(path: string): string {

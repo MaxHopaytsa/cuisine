@@ -6,6 +6,9 @@ type EnvironmentSchema = {
     PORT: number;
     ENVIRONMENT: ValueOf<typeof AppEnvironment>;
   };
+  DB: {
+    DATABASE_URL: string;
+  };
 };
 
 export { type EnvironmentSchema };

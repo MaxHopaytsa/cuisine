@@ -1,8 +1,6 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { ApolloServer, type BaseContext } from '@apollo/server';
-import { fastifyApolloDrainPlugin, fastifyApolloHandler,  } from '@as-integrations/fastify';
 import cors from '@fastify/cors';
 import fastifyStatic from '@fastify/static';
 import Fastify, {
@@ -16,12 +14,15 @@ import Fastify, {
 import { ServerErrorType } from '~/libs/enums/enums.js';
 import { type IConfig } from '~/libs/packages/config/config.js';
 import { type ILogger } from '~/libs/packages/logger/logger.js';
-import {
-  type ServerCommonErrorResponse,
-} from '~/libs/types/types.js';
+import { type ServerCommonErrorResponse } from '~/libs/types/types.js';
 
+import { Apollo, type IApollo } from '../apollo/apollo.js';
 import { HttpCode, HttpError } from '../http/http.js';
-import { type IServerApp,type IServerAppApi } from './libs/interfaces/interfaces.js';
+import { prismaPlugin } from '../prisma/prisma.plugin.js';
+import {
+  type IServerApp,
+  type IServerAppApi,
+} from './libs/interfaces/interfaces.js';
 import { type ServerAppRouteParameters } from './libs/types/types.js';
 
 type Constructor = {
@@ -30,52 +31,30 @@ type Constructor = {
   apis: IServerAppApi[];
 };
 
-const typeDefs = `#graphql
-  type Query {
-    hello: String
-  }
-`;
-
-const resolvers = {
-  Query: {
-    hello: (): string => 'Hello, GraphQL!',
-  },
-};
+type FastifyApp = ReturnType<typeof Fastify>;
 
 class ServerApp implements IServerApp {
   private config: IConfig;
 
   private logger: ILogger;
 
-  private app: ReturnType<typeof Fastify>;
+  private app: FastifyApp;
 
   private apis: IServerAppApi[];
 
-  private apollo: ApolloServer;
+  private apollo: IApollo;
 
-  public constructor({
-    config,
-    logger,
-    apis,
-  }: Constructor) {
+  public constructor({ config, logger, apis }: Constructor) {
     this.config = config;
     this.logger = logger;
     this.app = Fastify();
     this.apis = apis;
 
-    this.apollo  = new ApolloServer<BaseContext>({
-      typeDefs,
-      resolvers,
-      plugins: [fastifyApolloDrainPlugin(this.app)],
-    }); 
+    this.apollo = new Apollo(this.app, this.logger);
   }
 
   public addRoute(parameters: ServerAppRouteParameters): void {
-    const {
-      path,
-      method,
-      handler,
-    } = parameters;
+    const { path, method, handler } = parameters;
 
     const onRequests: onRequestHookHandler[] = [];
     const preHandler: preHandlerHookHandler[] = [];
@@ -91,7 +70,6 @@ class ServerApp implements IServerApp {
       preValidation: preValidations,
       schema,
     });
-
     this.logger.info(`Route: ${method as string} ${path} is registered`);
   }
 
@@ -107,22 +85,10 @@ class ServerApp implements IServerApp {
     this.addRoutes(routers);
   }
 
-  public initGraphQLRoute(): void {
-
-    this.app.route({
-      url: '/graphql',
-      method: ['POST', 'GET'],
-      handler: fastifyApolloHandler(this.apollo),
-    });
-
-  }
-
   public async initMiddlewares(): Promise<void> {
-        await this.app.register(cors, {
-          origin: '*',
-          methods: 'GET,PUT,POST,DELETE',
-          allowedHeaders: 'Content-Type',
-        });
+    await this.app.register(cors);
+
+    await this.app.register(prismaPlugin);
   }
 
   private async initServe(): Promise<void> {
@@ -142,38 +108,37 @@ class ServerApp implements IServerApp {
   }
 
   private initErrorHandler(): void {
-    this.app.setErrorHandler(
-      (error: FastifyError, _request, replay) => {
-
-        if (error instanceof HttpError) {
-          this.logger.error(
-            `[Http Error]: ${error.status.toString()} – ${error.message}`,
-          );
-
-          const response: ServerCommonErrorResponse = {
-            errorType: ServerErrorType.COMMON,
-            message: error.message,
-          };
-
-          return replay.status(error.status).send(response);
-        }
-
-        this.logger.error(error.message);
+    this.app.setErrorHandler((error: FastifyError, _request, replay) => {
+      if (error instanceof HttpError) {
+        this.logger.error(
+          `[Http Error]: ${error.status.toString()} – ${error.message}`,
+        );
 
         const response: ServerCommonErrorResponse = {
           errorType: ServerErrorType.COMMON,
           message: error.message,
         };
 
-        return replay.status(HttpCode.INTERNAL_SERVER_ERROR).send(response);
-      },
-    );
+        return replay.status(error.status).send(response);
+      }
+
+      this.logger.error(error.message);
+
+      const response: ServerCommonErrorResponse = {
+        errorType: ServerErrorType.COMMON,
+        message: error.message,
+      };
+
+      return replay.status(HttpCode.INTERNAL_SERVER_ERROR).send(response);
+    });
   }
 
   public async init(): Promise<void> {
     this.logger.info('Application initialization…');
 
     await this.apollo.start();
+
+    this.logger.info('Start apollo server');
 
     await this.initServe();
 
@@ -183,7 +148,7 @@ class ServerApp implements IServerApp {
 
     this.initRoutes();
 
-    this.initGraphQLRoute();
+    this.apollo.initApolloRoute();
 
     await this.app
       .listen({
@@ -204,4 +169,4 @@ class ServerApp implements IServerApp {
   }
 }
 
-export { ServerApp };
+export { type FastifyApp, ServerApp };
