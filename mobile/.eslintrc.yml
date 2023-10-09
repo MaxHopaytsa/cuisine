@@ -1,0 +1,13 @@
+parserOptions:
+    project:
+        - ./tsconfig.json
+
+extends:
+    - ../.eslintrc.yml
+
+settings:
+    import/ignore:
+        - 'react-native'
+
+rules:
+    import/extensions: off

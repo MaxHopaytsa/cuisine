@@ -6,10 +6,19 @@
     "node": "18.x.x",
     "npm": "9.x.x"
   },
+  "exports": {
+    "./build/*": {
+      "import": "./build/esm/*",
+      "require": "./build/cjs/*",
+      "default": "./build/esm/*"
+    }
+  },
   "scripts": {
+    "watch": "tsc -b --watch ./tsconfig.cjs.json ./tsconfig.esm.json && npm run build:copy",
     "lint:type": "npx tsc --noEmit",
     "lint:js": "npx eslint \"src/**/*.ts\"",
-    "build": "npx tsc && tsc-alias"
+    "build:alias": "tsc-alias -p ./tsconfig.cjs.json &&  tsc-alias -p ./tsconfig.esm.json",
+    "build": "npx tsc && tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json && npm run build:alias"
   },
   "dependencies": {
     "filesize": "^10.0.12",
