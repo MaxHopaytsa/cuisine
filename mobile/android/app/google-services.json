@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "374268143744",
+    "project_id": "cuisines-750fb",
+    "storage_bucket": "cuisines-750fb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374268143744:android:730adcdf989b70b5ca9e65",
+        "android_client_info": {
+          "package_name": "com.cuisine"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA39_tm6QoXWvxLuiVGsBmYmB2yF7EVhlg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

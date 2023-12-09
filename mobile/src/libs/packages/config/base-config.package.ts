@@ -1,9 +1,9 @@
 import EnvConfig from 'react-native-config';
 
-import { type AppEnvironment } from '~/libs/enums/enums.js';
+import { type AppEnvironment } from '~/libs/enums/enums';
 import { type ValueOf } from '~/libs/types/types.js';
 
-import { type Config, type EnvironmentSchema } from './libs/types/types.js';
+import { type Config, type EnvironmentSchema } from './libs/types/types';
 
 class BaseConfig implements Config {
   public ENV: EnvironmentSchema;

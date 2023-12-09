@@ -1,7 +1,7 @@
 const {
   getDefaultConfig,
   mergeConfig,
-} = require('../node_modules/@react-native/metro-config');
+} = require('@react-native/metro-config');
 const path = require('node:path');
 
 const pathToShared = path.resolve(__dirname, '../shared/build/cjs');

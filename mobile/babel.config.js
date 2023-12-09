@@ -13,7 +13,7 @@ module.exports = {
             __dirname,
             '../shared/build/cjs/\\1',
           ),
-          '^#(.+)': './src/\\1',
+          '^~(.+)': './src/\\1',
         },
       },
     ],

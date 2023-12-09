@@ -1,0 +1,17 @@
+#import '../../../../packages/user/user.schema.graphql'
+
+directive @auth on FIELD_DEFINITION
+directive @validation(schemaName: Validation) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+enum Validation {
+  USER_SIGN_UP_VALIDATION,
+  USER_SIGN_IN_VALIDATION,
+}
+
+type Query {
+  user: User  @auth
+}
+
+type Mutation {
+  signUpUser(input: SignUpInput!): UserMutationResponse! @validation(schemaName: USER_SIGN_UP_VALIDATION)
+}

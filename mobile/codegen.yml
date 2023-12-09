@@ -1,0 +1,11 @@
+overwrite: true
+schema: http://localhost:3001/api/v1/graphql
+documents: ['./src/**/*.{ts,tsx}']
+generates:
+  './src/libs/packages/apollo/generate/':
+    preset: client
+    plugins:
+      - typescript
+    presetConfig:
+      gqlTagName: gql
+ignoreNoDocuments: true

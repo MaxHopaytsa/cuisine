@@ -63,6 +63,38 @@ class Config implements IConfig {
           default: null,
         },
       },
+      FIREBASE: {
+        FIREBASE_TYPE: {
+          doc: 'Firebase type string',
+          format: String,
+          env: 'FIREBASE_TYPE',
+          default: null,
+        },
+        FIREBASE_PRIVATE_KEY: {
+          doc: 'Firebase private key string',
+          format: String,
+          env: 'FIREBASE_PRIVATE_KEY',
+          default: null,
+        },
+        FIREBASE_PROJECT_ID: {
+          doc: 'Firebase project id',
+          format: String,
+          env: 'FIREBASE_PROJECT_ID',
+          default: null,
+        },
+        FIREBASE_PRIVATE_KEY_ID: {
+          doc: 'Firebase private key id',
+          format: String,
+          env: 'FIREBASE_PRIVATE_KEY_ID',
+          default: null,
+        },
+        FIREBASE_CLIENT_EMAIL: {
+          doc: 'Firebase client email string',
+          format: String,
+          env: 'FIREBASE_CLIENT_EMAIL',
+          default: null,
+        }
+      }
     });
   }
 }

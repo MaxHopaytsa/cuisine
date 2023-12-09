@@ -13,6 +13,7 @@ export {
   type HttpOptions,
   type IHttp,
 } from './libs/packages/http/http.js';
+export { type IStorage } from './libs/packages/storage/storage.js';
 export {
   type ErrorConstructor,
   type FirstParameter,
@@ -23,5 +24,13 @@ export {
   type ServerErrorDetail,
   type ServerErrorResponse,
   type ServerValidationErrorResponse,
+  type ValidationSchema,
   type ValueOf,
 } from './libs/types/types.js';
+export {
+  type UserAuthResponseDto,
+  type UserSignInRequestDto,
+  userSignInValidationSchema,
+  type UserSignUpRequestDto,
+  userSignUpValidationSchema,
+} from './packages/users/users.js';

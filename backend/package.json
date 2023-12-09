@@ -12,6 +12,8 @@
     "lint:js": "npx eslint \"src/**/*.ts\"",
     "start:dev": "nodemon --exec \"node --loader ts-paths-esm-loader\" src/index.ts",
     "build:ts": "npx tsc && tsc-alias -p tsconfig.json",
+    "graphql:generate": "graphql-codegen --config codegen.yml",
+    "prisma:generate": "npx prisma generate --schema src/libs/packages/prisma/schema/table-schema.prisma",
     "start": "node index.js"
   },
   "dependencies": {
@@ -30,12 +32,21 @@
     "fastify": "^4.23.2",
     "fastify-plugin": "^4.5.1",
     "fastify-raw-body": "^4.2.2",
+    "firebase-admin": "^11.11.0",
     "graphql": "^16.8.1",
+    "graphql-import-node": "^0.0.5",
+    "graphql-modules": "^2.3.0",
     "mime-types": "^2.1.35",
     "pino": "^8.15.3",
-    "pino-pretty": "^10.2.0"
+    "pino-pretty": "^10.2.0",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
+    "@eddeee888/gcg-typescript-resolver-files": "^0.7.1",
+    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/graphql-modules-preset": "^4.0.1",
+    "@graphql-codegen/typescript": "^4.0.1",
+    "@graphql-codegen/typescript-resolvers": "^4.0.1",
     "@types/mime-types": "^2.1.2",
     "@types/uuid": "^9.0.4",
     "nodemon": "^3.0.1",

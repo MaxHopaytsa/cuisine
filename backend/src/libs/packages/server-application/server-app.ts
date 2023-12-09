@@ -1,3 +1,4 @@
+
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -17,6 +18,7 @@ import { type ILogger } from '~/libs/packages/logger/logger.js';
 import { type ServerCommonErrorResponse } from '~/libs/types/types.js';
 
 import { Apollo, type IApollo } from '../apollo/apollo.js';
+import { type IFirebase } from '../firebase/firebase.js';
 import { HttpCode, HttpError } from '../http/http.js';
 import { prismaPlugin } from '../prisma/prisma.plugin.js';
 import {
@@ -29,6 +31,7 @@ type Constructor = {
   config: IConfig;
   logger: ILogger;
   apis: IServerAppApi[];
+  firebase: IFirebase;
 };
 
 type FastifyApp = ReturnType<typeof Fastify>;
@@ -44,13 +47,16 @@ class ServerApp implements IServerApp {
 
   private apollo: IApollo;
 
-  public constructor({ config, logger, apis }: Constructor) {
+  private firebase: IFirebase;
+
+  public constructor({ config, logger, apis, firebase }: Constructor) {
     this.config = config;
     this.logger = logger;
     this.app = Fastify();
     this.apis = apis;
+    this.firebase = firebase;
 
-    this.apollo = new Apollo(this.app, this.logger);
+    this.apollo = new Apollo(this.app, this.logger, this.firebase);
   }
 
   public addRoute(parameters: ServerAppRouteParameters): void {
@@ -86,7 +92,10 @@ class ServerApp implements IServerApp {
   }
 
   public async initMiddlewares(): Promise<void> {
-    await this.app.register(cors);
+    await this.app.register(cors, {
+      origin: '*',
+      // methods: ['GET'],
+    });
 
     await this.app.register(prismaPlugin);
   }
@@ -111,7 +120,7 @@ class ServerApp implements IServerApp {
     this.app.setErrorHandler((error: FastifyError, _request, replay) => {
       if (error instanceof HttpError) {
         this.logger.error(
-          `[Http Error]: ${error.status.toString()} – ${error.message}`,
+          `[Http Error]: ${error.status} – ${error.message}`,
         );
 
         const response: ServerCommonErrorResponse = {
@@ -136,13 +145,13 @@ class ServerApp implements IServerApp {
   public async init(): Promise<void> {
     this.logger.info('Application initialization…');
 
+    await this.initMiddlewares();
+
     await this.apollo.start();
 
     this.logger.info('Start apollo server');
 
     await this.initServe();
-
-    await this.initMiddlewares();
 
     this.initErrorHandler();
 
@@ -166,6 +175,7 @@ class ServerApp implements IServerApp {
         this.config.ENV.APP.ENVIRONMENT as string
       }.`,
     );
+
   }
 }
 
